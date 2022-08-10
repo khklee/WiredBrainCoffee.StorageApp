@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using WiredBrainCoffee.StorageApp.Entities;
@@ -16,6 +17,8 @@ namespace WiredBrainCoffee.StorageApp.Repositories
       _dbSet = _dbContext.Set<T>();
     }
 
+    public event EventHandler<T>? ItemAdded;
+
     public IEnumerable<T> GetAll()
     {
       return _dbSet.OrderBy(item => item.Id).ToList();
@@ -29,6 +32,7 @@ namespace WiredBrainCoffee.StorageApp.Repositories
     public void Add(T item)
     {
       _dbSet.Add(item);
+      ItemAdded?.Invoke(this, item);
     }
 
     public void Remove(T item)
